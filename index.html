@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Plataforma de Estudos com IA</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #f2f2f2;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    textarea {
+      width: 100%;
+      height: 80px;
+      font-size: 16px;
+      padding: 10px;
+      resize: none;
+      margin-top: 10px;
+    }
+    .resposta {
+      margin-top: 20px;
+      padding: 15px;
+      background: white;
+      border-left: 5px solid #2b72ff;
+      white-space: pre-wrap;
+    }
+    .info {
+      font-size: 12px;
+      color: #777;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Plataforma de Estudos 📚</h1>
+
+  <label for="pergunta">Digite sua dúvida ou peça uma questão:</label>
+  <textarea id="pergunta" placeholder="Ex: Me explique intertextualidade."></textarea>
+
+  <div class="resposta" id="resposta">Aguardando sua pergunta...</div>
+
+  <div class="info">Pressione Enter para enviar</div>
+
+  <script>
+    const input = document.getElementById("pergunta");
+    const respostaDiv = document.getElementById("resposta");
+
+    // Gera e mantém uma sessão única no navegador
+    let sessionID = localStorage.getItem("session") || "sessao_" + Date.now();
+    localStorage.setItem("session", sessionID);
+
+    input.addEventListener("keydown", async function (event) {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+
+        const pergunta = input.value.trim();
+        if (!pergunta) {
+          respostaDiv.innerText = "Digite uma pergunta válida.";
+          return;
+        }
+
+        respostaDiv.innerText = "A IA está pensando... ⏳";
+
+        try {
+          const resposta = await fetch("https://SEU-N8N-WEBHOOK/webhook/plataforma_ia", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              "pergunta": pergunta,
+              "session": sessionID
+            })
+          });
+
+          const dados = await resposta.json();
+          respostaDiv.innerText = dados.resposta || "A IA respondeu, mas não retornou texto.";
+        } catch (erro) {
+          console.error(erro);
+          respostaDiv.innerText = "Erro ao se comunicar com a IA.";
+        }
+
+        input.value = "";
+      }
+    });
+  </script>
+
+</body>
+</html>
