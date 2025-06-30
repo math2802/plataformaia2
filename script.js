@@ -45,7 +45,7 @@ async function enviarPergunta() {
   salvarHistorico();
 
   try {
-    const response = await fetch("https://segredos123.app.n8n.cloud/webhook/pataforma-ai", {
+    const response = await fetch("https://segredos123.app.n8n.cloud/webhook-test/c7364208-2d8b-4930-8bcc-7c66d5c75a59", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ pergunta, sessionId: sessionID })
